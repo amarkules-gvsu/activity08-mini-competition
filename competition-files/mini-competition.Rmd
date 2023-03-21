@@ -5,4 +5,38 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(GGally)
 ```
+
+# Adding useful columns
+
+```{r}
+(data <- read_csv("data/inventory.csv"))
+```
+
+```{r}
+mod_data <- data %>%
+  group_by(item_no) %>%
+  mutate(
+    lag1_sold = lag(sold, n=1, order_by=item_no),
+    lag2_sold = lag(sold, n=2, order_by=item_no),
+    lag3_sold = lag(sold, n=3, order_by=item_no),
+    lag4_sold = lag(sold, n=4, order_by=item_no),
+    lag5_sold = lag(sold, n=5, order_by=item_no),
+    lag6_sold = lag(sold, n=6, order_by=item_no),
+    lag7_sold = lag(sold, n=7, order_by=item_no),
+    lag8_sold = lag(sold, n=8, order_by=item_no),
+    lag9_sold = lag(sold, n=9, order_by=item_no),
+    lag10_sold = lag(sold, n=10, order_by=item_no)
+         ) %>% replace(is.na(.), 0) %>% ungroup()
+```
+
+
+```{r}
+mod_data %>%
+  mutate(
+    prev_3_wk_moving_average = rowMeans(select(mod_data))
+  )
+```
+
